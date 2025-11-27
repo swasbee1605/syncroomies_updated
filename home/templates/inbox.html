@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Chats</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0033a1;
+            --secondary: #0e56d9;
+            --accent: #ffbfa3;
+            --bg-soft: #f6f7ff;
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --white: #ffffff;
+        }
+
+        /* Remove horizontal scroll */
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 15% 20%, rgba(255,191,163,0.55), transparent 60%),
+                        radial-gradient(circle at 85% 25%, rgba(14,86,217,0.30), transparent 65%),
+                        #ffffff;
+            min-height: 100vh;
+        }
+
+        /* ---------------- NAVBAR ---------------- */
+        nav {
+            width: 100%;
+            height: 72px;
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0px 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            box-sizing: border-box;
+        }
+
+        nav .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: "Playfair Display", serif;
+            white-space: nowrap;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 1.25rem;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+
+        /* ---------------- TOP SECTION ---------------- */
+        .top-area {
+            width: 100%;
+            padding: 140px 20px 140px;
+            text-align: center;
+            border-bottom-left-radius: 60px;
+            border-bottom-right-radius: 60px;
+        }
+
+        .label-pill {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(0,51,161,0.1);
+            border-radius: 999px;
+            color: var(--secondary);
+            font-size: 0.85rem;
+            letter-spacing: 0.16em;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-light);
+        }
+
+        /* ---------------- CHAT LIST ---------------- */
+        .chat-container {
+            max-width: 1100px;
+            margin: -40px auto 80px;
+            padding: 0 20px;
+        }
+
+        .chat-card {
+            background: var(--white);
+            padding: 18px 26px;
+            border-radius: 18px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.06);
+            margin-bottom: 22px;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .chat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 26px 55px rgba(0,0,0,0.10);
+        }
+
+        .chat-card a {
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .empty-text {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="logo">Syncroomies</div>
+
+    <ul>
+        <li><a href="/">Home</a></li>
+
+        {% if request.user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        
+        {% else %}
+            <li><a href="{% url 'login_page' %}">Login</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<!-- HERO -->
+<div class="top-area">
+    <div class="label-pill">YOUR CHATS</div>
+    <h1>Your Messages</h1>
+    <p class="subtitle">All your active conversations in one place.</p>
+</div>
+
+<!-- CHAT LIST -->
+<div class="chat-container">
+    {% for u in chat_users %}
+        <div class="chat-card">
+            <a href="{% url 'chat_view' u.username %}">{{ u.username }}</a>
+        </div>
+    {% empty %}
+        <p class="empty-text">No conversations yet…</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>

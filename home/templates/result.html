@@ -1,0 +1,388 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+</head>
+<body>
+
+    Logged in as {{ request.user }}
+    <br>
+    {% if partner %}
+        <h2>Partner(s) Found:</h2>
+        {% for part in partner %}
+        
+        <hr>
+            <p><a href="{% url 'chat_view' part.user.username %}">{{ part.user.username }} </href>- Compatibility Score: {{ part.value }}</p>
+            <p>Contact-{{ part.user.profile.contact }}</p>
+            <p>Email-{{ part.user.profile.email }}</p>
+            <hr>
+        
+
+        {% endfor %}
+    {% else %}
+        <h1>No partner found</h1>
+        <p>Check again after sometime...</p>
+    {% endif %}
+
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #f6e7e1, #f1f4e9);
+            padding: 0;
+            color: #ffffff;
+        }
+
+        .user-banner {
+            background: radial-gradient(circle at top left, #001f5b, #003580);
+            padding: 40px 20px;
+            text-align: center;
+            color: #fff;
+            border-bottom-left-radius: 50% 20%;
+            border-bottom-right-radius: 50% 20%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-banner h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .results-section {
+            text-align: center;
+            max-width: 800px;
+            margin: 40px auto 0;
+            padding: 30px;
+        }
+
+        .results-section h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #001f5b;
+        }
+
+        .partner-block {
+            background-color: #001f5b;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            color: #ffffff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .partner-block:hover {
+            transform: translateY(-5px);
+            background-color: #003080 ;
+            opacity:0.8;
+        }
+
+        .partner-block p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+
+        .no-partner {
+            font-size: 20px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #001f5b;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #003080;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="user-banner">
+        <h1>Welcome, {{ request.user }}</h1>
+    </div>
+
+    <div class="results-section">
+        {% if partner %}
+            <h2>Partner(s) Found:</h2>
+            {% for part in partner %}
+                <div class="partner-block">
+                    <p><strong>{{ part.user.username }}</strong></p>
+                    <p>Compatibility Score: {{ part.value }}</p>
+                    <p>Contact: {{ part.user.profile.contact }}</p>
+                    <p>Email: {{ part.user.profile.email }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h2>No Partner Found</h2>
+            <p class="no-partner">Check again after some time...</p>
+        {% endif %}
+
+        <a href="/" class="btn">Back to Login</a>
+    </div>
+
+    <div class="footer">Thanks for using our platform</div>
+
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f5f2ed;
+            padding: 0;
+            color: #ffffff;
+        }
+
+        .user-banner {
+            background: radial-gradient(circle at top left, #001f5b, #003580);
+            padding: 40px 20px;
+            text-align: center;
+            color: #fff;
+            border-bottom-left-radius: 50% 20%;
+            border-bottom-right-radius: 50% 20%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-banner h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .results-section {
+            text-align: center;
+            max-width: 800px;
+            margin: 40px auto 0;
+            padding: 30px;
+        }
+
+        .results-section h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #001f5b;
+            ;
+        }
+
+        .partner-block {
+            background-color: #001f5b;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            color: #ffffff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .partner-block:hover {
+            transform: translateY(-5px);
+            background-color: #003080 ;
+            opacity:0.8;
+        }
+
+        .partner-block p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+
+        .no-partner {
+            font-size: 20px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #001f5b;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #003080;
+        }
+        body {
+  background: #f8f1ec;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.chatbox {
+  width: 400px;
+  margin: 60px auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 6px 24px rgba(44, 62, 80, 0.12);
+  padding: 32px 24px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chat-messages {
+  flex: 1;
+  min-height: 200px;
+  max-height: 320px;
+  overflow-y: auto;
+  margin-bottom: 18px;
+  padding-right: 6px;
+}
+
+.chat-message {
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  background: #f0f4fa;
+  border-radius: 14px;
+  font-size: 1rem;
+  color: #2d3a4a;
+  display: flex;
+  align-items: center;
+}
+
+.sender {
+  font-weight: bold;
+  color: #1a2954;
+  margin-right: 8px;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+#message-input {
+  flex: 1;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background: #faf7f3;
+  transition: border 0.2s;
+}
+
+#message-input:focus {
+  border: 1.5px solid #1a2954;
+}
+
+button {
+  background: #1a2954;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #243a6b;
+}
+.help-heading {
+  text-align: center;
+  color: #1a2954; /* Matches the navy blue from your card/button */
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+  letter-spacing: 0.5px;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="user-banner">
+        <h1>Welcome, {{ request.user }}</h1>
+    </div>
+
+    <div class="results-section">
+        {% if partner %}
+            <h2>Partner(s) Found (Click to chat):</h2>
+            {% for part in partner %}
+                <div class="partner-block">
+                    <p><strong><a href="{% url 'chat_view' part.user.username %}" style="color: #f5f2ed;">{{ part.user.username }}</a></strong></p>
+                    <p>Compatibility Score: {{ part.value }}</p>
+                    <p>Contact: {{ part.user.profile.contact }}</p>
+                    <p>Email: {{ part.user.profile.email }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h2>No Partner Found</h2>
+            <p class="no-partner">Check again after some time...</p>
+        {% endif %}
+
+        <a href="/" class="btn">Back to Home</a>
+    </div>
+
+    <div class="footer">Thanks for using our platform</div>
+
+    
+</body>
+</html>

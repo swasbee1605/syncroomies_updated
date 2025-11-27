@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BFI-10 — Personality Test</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --navy: #001c55;
+      --blue-start: #0041c4;
+      --blue-end: #006aff;
+      --muted: #eef2fa;
+      --card-bg: #ffffff;
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; font-family:"Poppins",sans-serif; }
+
+    body{
+      background: #eef2fa;
+      display:flex;
+      justify-content:center;
+      padding:20px;
+    }
+
+    /* ============================================
+         FULL-PAGE ROUNDED GRADIENT BACKGROUND
+       ============================================ */
+    .page-wrapper {
+      width: 100%;
+      max-width: 1500px;
+      border-radius: 55px;
+      overflow:hidden;
+
+      background:
+        radial-gradient(circle at 10% 15%, rgba(255,191,163,0.40), transparent 55%),
+        radial-gradient(circle at 85% 80%, rgba(124,163,255,0.35), transparent 60%),
+        linear-gradient(180deg, #ffffff 0%, #eef3ff 100%);
+
+      box-shadow: 0 25px 45px rgba(0,0,0,0.10);
+      padding-bottom: 60px;
+    }
+
+    /* ============================================
+         HERO SECTION
+       ============================================ */
+    .top-hero{
+      padding:80px 20px 70px;
+      text-align:center;
+      position:relative;
+    }
+
+    .hero-tag {
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #0033a1;
+      font-weight: 600;
+      background: rgba(255,255,255,0.85);
+      padding: 7px 28px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    .top-hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      color: #0d2a66;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: #4e5b83;
+      font-weight: 400;
+    }
+
+    /* ============================================
+         MAIN QUESTION AREA
+       ============================================ */
+    .main {
+      max-width:900px;
+      margin: 10px auto 40px;   /* moved upward */
+
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 18px 40px rgba(6,30,65,0.08);
+      animation: cardIn 600ms ease forwards;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro {
+      margin-bottom: 18px;
+      color: var(--navy);
+      font-weight:700;
+      font-size:20px;
+      text-align:center;
+    }
+
+    /* QUESTION BLOCK */
+    .question {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 22px 20px 36px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(6,30,65,0.06);
+      position:relative;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 500ms ease;
+      min-height: 170px;
+    }
+
+    .question.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .q-label{
+      font-weight:600;
+      color:var(--navy);
+      font-size:18px;
+      padding-right: 160px;
+    }
+
+    /* QUESTION ICON IMAGE */
+    .q-burst {
+      position: absolute;
+      right: 25px;
+      top: 20px;
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      background: white;
+      padding: 10px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      z-index: 2;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-right: 200px;
+      margin-top: 90px;
+    }
+
+    input[type=range]{
+      width:100%;
+      height:8px;
+      background: rgba(99,130,255,0.18);
+      border-radius:12px;
+      outline:none;
+      -webkit-appearance:none;
+    }
+
+    input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:26px;height:26px;border-radius:50%;
+      background: linear-gradient(180deg,var(--blue-start),var(--blue-end));
+      border: 4px solid white;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.16);
+      cursor:pointer;
+    }
+
+    .value-pill {
+      width:42px;
+      text-align:center;
+      font-weight:700;
+      color: var(--navy);
+      font-size:17px;
+    }
+
+    button.submit{
+      padding:14px 28px;
+      background: linear-gradient(90deg,var(--blue-start),var(--blue-end));
+      color:white;
+      border:0;
+      border-radius:12px;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow: 0 10px 30px rgba(4,67,181,0.16);
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .submit-row { text-align:center; }
+  </style>
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+  <!-- HERO -->
+  <section class="top-hero">
+      <p class="hero-tag">BFI-10 • Personality Test</p>
+      <h1>Find your personality match.</h1>
+      <p class="hero-sub">A quick personality test designed to help find the right roommate.</p>
+  </section>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="card">
+
+      <div class="intro">
+        Tell us about yourself — slide to choose how much each sentence fits you
+      </div>
+
+      <form method="POST" action="">
+        {% csrf_token %}
+
+        <!-- Q1 -->
+        <section class="question">
+          <div class="q-label">1. I see myself as someone who is reserved.</div>
+          <img class="q-burst" src="/static/extrovert.jpg">
+          <div class="slider-row"><input type="range" name="q1" min="1" max="5" value="3"
+          oninput="document.getElementById('v1').innerText=this.value"><div class="value-pill" id="v1">3</div></div>
+        </section>
+
+        <!-- Q2 -->
+        <section class="question">
+          <div class="q-label">2. I see myself as someone who is generally trusting.</div>
+          <img class="q-burst" src="/static/extrovert2.jpg">
+          <div class="slider-row"><input type="range" name="q2" min="1" max="5" value="3"
+          oninput="document.getElementById('v2').innerText=this.value"><div class="value-pill" id="v2">3</div></div>
+        </section>
+
+        <!-- Q3 -->
+        <section class="question">
+          <div class="q-label">3. I see myself as someone who tends to be lazy.</div>
+          <img class="q-burst" src="/static/lazy.jpg">
+          <div class="slider-row"><input type="range" name="q3" min="1" max="5" value="3"
+          oninput="document.getElementById('v3').innerText=this.value"><div class="value-pill" id="v3">3</div></div>
+        </section>
+
+        <!-- Q4 -->
+        <section class="question">
+          <div class="q-label">4. I see myself as someone who handles stress well.</div>
+          <img class="q-burst" src="/static/stress.jpg">
+          <div class="slider-row"><input type="range" name="q4" min="1" max="5" value="3"
+          oninput="document.getElementById('v4').innerText=this.value"><div class="value-pill" id="v4">3</div></div>
+        </section>
+
+        <!-- Q5 -->
+        <section class="question">
+          <div class="q-label">5. I see myself as someone who has few artistic interests.</div>
+          <img class="q-burst" src="/static/artistic.jpg">
+          <div class="slider-row"><input type="range" name="q5" min="1" max="5" value="3"
+          oninput="document.getElementById('v5').innerText=this.value"><div class="value-pill" id="v5">3</div></div>
+        </section>
+
+        <!-- Q6 -->
+        <section class="question">
+          <div class="q-label">6. I see myself as someone who is outgoing, sociable.</div>
+          <img class="q-burst" src="/static/extrovert4.jpg">
+          <div class="slider-row"><input type="range" name="q6" min="1" max="5" value="3"
+          oninput="document.getElementById('v6').innerText=this.value"><div class="value-pill" id="v6">3</div></div>
+        </section>
+
+        <!-- Q7 -->
+        <section class="question">
+          <div class="q-label">7. I see myself as someone who tends to find fault with others.</div>
+          <img class="q-burst" src="/static/extrovert3.jpg">
+          <div class="slider-row"><input type="range" name="q7" min="1" max="5" value="3"
+          oninput="document.getElementById('v7').innerText=this.value"><div class="value-pill" id="v7">3</div></div>
+        </section>
+
+        <!-- Q8 -->
+        <section class="question">
+          <div class="q-label">8. I see myself as someone who does a thorough job.</div>
+          <img class="q-burst" src="/static/goodjob.jpg">
+          <div class="slider-row"><input type="range" name="q8" min="1" max="5" value="3"
+          oninput="document.getElementById('v8').innerText=this.value"><div class="value-pill" id="v8">3</div></div>
+        </section>
+
+        <!-- Q9 -->
+        <section class="question">
+          <div class="q-label">9. I see myself as someone who gets nervous easily.</div>
+          <img class="q-burst" src="/static/stress2.jpg">
+          <div class="slider-row"><input type="range" name="q9" min="1" max="5" value="3"
+          oninput="document.getElementById('v9').innerText=this.value"><div class="value-pill" id="v9">3</div></div>
+        </section>
+
+        <!-- Q10 -->
+        <section class="question">
+          <div class="q-label">10. I see myself as someone who has an active imagination.</div>
+          <img class="q-burst" src="/static/imagination.jpg">
+          <div class="slider-row"><input type="range" name="q10" min="1" max="5" value="3"
+          oninput="document.getElementById('v10').innerText=this.value"><div class="value-pill" id="v10">3</div></div>
+        </section>
+
+        <button class="submit" type="submit">Submit & Continue</button>
+
+      </form>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const qs = document.querySelectorAll('.question');
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    qs.forEach(q=> io.observe(q));
+  });
+</script>
+
+</body>
+</html>

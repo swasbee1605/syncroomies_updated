@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Swipe Flashcards</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'EB Garamond', serif;
+      background-color: #f5f2ed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .navbar {
+      width: 100%;
+      background-color: #001c55;
+      color: #ead7d1;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      z-index: 999;
+    }
+
+    .navbar h2 {
+      margin: 0;
+      font-size: 2.5rem;
+      margin-left: 630px;
+    }
+
+    .form-wrapper {
+      margin-top: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .card-container {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      width: 100%;
+      max-width: 1000px;
+      padding: 40px 0;
+      gap: 20px;
+      padding-left: 40px;
+    }
+
+    .card {
+      min-width: 50%;
+      max-width: 80%;
+      height: 300px;
+      background-color: #001c55;
+      color: #ead7d1;
+      border-radius: 35px;
+      box-shadow: 30px 30px 30px 30px rgba(0, 0, 0, 0.087);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      text-align: center;
+      transition: transform 0.3s;
+    
+    }
+
+    .card label {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      margin-top: 20px;
+
+      
+    }
+
+    .card input {
+      padding: 10px 15px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      border: none;
+      width: 30%;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+
+    .controls button {
+      background-color: #001c55;
+      color: #ead7d1;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .controls button:hover {
+      background-color: #002d7d;
+    }
+
+    .submit-button {
+      display: none;
+      margin-top: 20px;
+      padding: 14px 28px;
+      font-size: 1rem;
+      border-radius: 10px;
+      background-color: #001c55;
+      color: #ead7d1;
+      border: none;
+      cursor: pointer;
+    }
+
+    .progress {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #001c55;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        height: 320px;
+        min-width: 90%;
+        max-width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h2>Personality Test</h2>
+  </div>
+
+  <form method="post" id="quiz-form" class="form-wrapper">
+    {% csrf_token %}
+    <div class="card-container" id="cardContainer">
+
+    </div>
+    <div class="controls">
+      <button type="button" id="backBtn">⬅ Back</button>
+      <button type="button" id="nextBtn">Next ➡</button>
+    </div>
+    <div class="progress" id="progress">1 / 10</div>
+    <button type="submit" class="submit-button" id="submitBtn">Submit</button>
+  </form>
+
+  <script>
+    const questions = [
+      { name: "sleep", label: "1. How much of an early riser are you?" },
+      { name: "lights", label: "2. Comfortable sleeping with lights on?" },
+      { name: "study", label: "3. Prefer quiet study environment?" },
+      { name: "cleanliness", label: "4. Importance of tidy space?" },
+      { name: "quite", label: "5. Prefer quiet evenings over partying?" },
+      { name: "selfcontained", label: "6. Prefer low-key over loud events?" },
+      { name: "books", label: "7. Enjoy reading books for leisure?" },
+      { name: "overnight", label: "8. Comfortable with overnight guests?" },
+      { name: "sharing", label: "9. Preference for sharing responsibilities?" },
+      { name: "allergy", label: "10. Do allergies affect your living?" },
+    ];
+
+    const container = document.getElementById("cardContainer");
+    const progress = document.getElementById("progress");
+    const nextBtn = document.getElementById("nextBtn");
+    const backBtn = document.getElementById("backBtn");
+    const submitBtn = document.getElementById("submitBtn");
+
+    let currentIndex = 0;
+
+    questions.forEach((q) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.innerHTML = `
+        <label>${q.label}</label>
+        <input type="number" name="${q.name}" min="0" max="5" required />
+      `;
+      container.appendChild(card);
+    });
+
+    const scrollToCard = (index) => {
+      const cards = container.querySelectorAll(".card");
+      if (cards[index]) {
+        cards[index].scrollIntoView({ behavior: "smooth", inline: "start" });
+        progress.textContent = `${index + 1} / ${questions.length}`;
+
+        backBtn.disabled = index === 0;
+        nextBtn.style.display = index === questions.length - 1 ? "none" : "inline-block";
+        submitBtn.style.display = index === questions.length - 1 ? "inline-block" : "none";
+      }
+    };
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        scrollToCard(currentIndex);
+      }
+    });
+
+    backBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        scrollToCard(currentIndex);
+      }
+    });
+
+    // Touch support
+    let startX = 0;
+    container.addEventListener("touchstart", e => {
+      startX = e.changedTouches[0].screenX;
+    });
+
+    container.addEventListener("touchend", e => {
+      const endX = e.changedTouches[0].screenX;
+      if (endX < startX - 50 && currentIndex < questions.length - 1) {
+        currentIndex++;
+        scrollToCard(currentIndex);
+      } else if (endX > startX + 50 && currentIndex > 0) {
+        currentIndex--;
+        scrollToCard(currentIndex);
+      }
+    });
+
+    scrollToCard(0);
+  </script>
+
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personality Test</title>
+
+
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+        background-image: linear-gradient(#f5f5dc,#ead7d1);
+        ;
+      font-family: 'EB Garamond', serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 5.5rem;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #001c55;
+      letter-spacing: 2px;
+    }
+
+    .form-outer {
+        background-image: linear-gradient(#ead7d1,#f5f5dc);
+      width: 90%;
+      max-width: 850px;
+      margin: 0 auto 60px auto;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+
+    .flashcard {
+      background-color: #001c55;
+      color: #ead7d1;
+      padding: 24px;
+      border-radius: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease;
+    }
+
+    .flashcard:hover {
+      transform: scale(1.05);
+    }
+
+    .flashcard label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+      line-height: 1.4;
+    }
+
+    .form-control {
+      width: 40%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(234, 215, 209, 0.8);
+      background-color: #fefefe;
+    }
+
+    .submit-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 14px 36px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      background-color: #001c55;
+      color: #ead7d1;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #003580;
+      transform: scale(1.03);
+    }
+
+    @media (max-width: 600px) {
+      .form-control {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🧠Personality Test🧠</h1>
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+        {{ message }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+  
+
+  <form method="post">
+    {% csrf_token %}
+    
+    <div class="form-outer">
+
+      <div class="flashcard">
+        <label>1. On a scale from 1 to 5, how much of an early riser are you?</label>
+        <input type="input" name="sleep" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>2. How comfortable are you sleeping with lights on?</label>
+        <input type="input" name="lights" class="form-control" min="0" max="5" required />
+      </div>
+
+      <div class="flashcard">
+        <label>3. How much do you prefer a quiet study environment?</label>
+        <input type="input" name="study" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>4. How important is maintaining a tidy and organized space to you?</label>
+        <input type="input" name="cleanliness" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>5. How much do you prioritize quiet evenings at home over partying?</label>
+        <input type="input" name="quite" class="form-control"min="0" max="5" required />
+      </div>
+
+      <div class="flashcard">
+        <label>6. Do you prefer low-key activities over loud, crowded events?</label>
+        <input type="input" name="selfcontained" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>7. How much do you enjoy reading books for leisure?</label>
+        <input type="input" name="books" class="form-control" min="0" max="5" required />
+      </div>
+
+      <div class="flashcard">
+        <label>8. How comfortable are you with having overnight guests?</label>
+        <input type="input" name="overnight" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>9. How much do you prefer sharing responsibilities?</label>
+        <input type="input" name="sharing" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>10. How much do your allergies affect your living arrangements?</label>
+        <input type="input" name="allergy" class="form-control" min="0" max="5" required />
+      </div>
+
+      <div class="submit-container">
+        <button type="submit" class="btn">Submit</button>
+      </div>
+
+    </div>
+  </form>
+
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color:#ead7d1">
+    <h1 style="font-style:EB+Garamond;text-align:center;font-size:500%;margin-top: 0;">Personality Test</h1>
+    <div style="background-color:#001c55; height: 400px; width: 80%; margin:0px auto 100px auto;display:flex;justify-content: center;align-items: center;">
+    <form method="post">
+    <div>
+        {% csrf_token %}
+        <div class="mb-3">
+          
+        </div>
+        
+          <div class="mb-3" >
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">1->On a scale from 1 to 5, how much of an early riser are you?</label>
+            <input type="input" class="form-control" name="sleep" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">2->How comfortable are you sleeping with lights on? (1 being not comfortable at 
+              all, 5 being very comfortable)
+              </label>
+            <input type="input" class="form-control" name="lights" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">3->How much do you prefer a quiet study environment? (1 being not at all, 5 
+              being very much)
+              </label>
+            <input type="input" class="form-control" name="study" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label"style="color:#ead7d1">4->How important is maintaining a tidy and organized living space to you? (1 
+              being not important, 5 being extremely important)
+              </label>
+            <input type="input" class="form-control" name="cleanliness" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">5->How much do you prioritize quiet evenings at home over partying? (1 being 
+              not at all, 5 being very much)
+              </label>
+            <input type="input" class="form-control" name="quite" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">6->How much do you prefer quiet, low-key activities over loud, crowded events? 
+              (1 being not at all, 5 being very much)</label>
+            <input type="input" class="form-control" name="selfcontained" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">7->On a scale from 1 to 5, how much do you enjoy spending time reading books 
+              for leisure?</label>
+            <input type="input" class="form-control" name="books" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">8->How comfortable are you with having overnight guests? (1 being not 
+              comfortable at all, 5 being very comfortable)</label>
+            <input type="input" class="form-control" name="overnight" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label"style="color:#ead7d1">9->How much do you prefer sharing responsibilities? (1 being not at all, 5 being 
+              very much)
+              </label>
+            <input type="input" class="form-control" name="sharing" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">10->On a scale from 1 to 5, how much do your allergies affect your living 
+              arrangements?</label>
+            <input type="input" class="form-control" name="allergy" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+        <button type="submit" href="result/" class="btn btn-primary">Submit</button>
+      </form>
+      </div>
+    </div>
+
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personality Test</title>
+
+ 
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #ead7d1;
+      font-family: 'EB Garamond', serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 5.5rem;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #001c55;
+      letter-spacing: 2px;
+    }
+
+    .form-outer {
+      background-color: #c56595;
+      width: 90%;
+      max-width: 850px;
+      margin: 0 auto 60px auto;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+
+    .flashcard {
+      background-color: #001c55;
+      color: #ead7d1;
+      padding: 24px;
+      border-radius: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease;
+    }
+
+    .flashcard:hover {
+      transform: scale(1.05);
+    }
+
+    .flashcard label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+      line-height: 1.4;
+    }
+
+    .form-control {
+      width: 40%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(234, 215, 209, 0.8);
+      background-color: #fefefe;
+    }
+
+    .submit-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 14px 36px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      background-color: #001c55;
+      color: #ead7d1;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #003580;
+      transform: scale(1.03);
+    }
+
+    @media (max-width: 600px) {
+      .form-control {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🧠Personality Test🧠</h1>
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+        {{ message }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+  
+
+  <form method="post">
+    {% csrf_token %}
+    
+    <div class="form-outer">
+
+      <div class="flashcard">
+        <label>1. On a scale from 1 to 5, how much of an early riser are you?</label>
+        <input type="input" name="sleep" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>2. How comfortable are you sleeping with lights on?</label>
+        <input type="input" name="lights" class="form-control" min="0" max="5" required />
+      </div>
+
+      <div class="flashcard">
+        <label>3. How much do you prefer a quiet study environment?</label>
+        <input type="input" name="study" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>4. How important is maintaining a tidy and organized space to you?</label>
+        <input type="input" name="cleanliness" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>5. How much do you prioritize quiet evenings at home over partying?</label>
+        <input type="input" name="quite" class="form-control"min="0" max="5" required />
+      </div>
+
+      <div class="flashcard">
+        <label>6. Do you prefer low-key activities over loud, crowded events?</label>
+        <input type="input" name="selfcontained" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>7. How much do you enjoy reading books for leisure?</label>
+        <input type="input" name="books" class="form-control" min="0" max="5" required />
+      </div>
+
+      <div class="flashcard">
+        <label>8. How comfortable are you with having overnight guests?</label>
+        <input type="input" name="overnight" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>9. How much do you prefer sharing responsibilities?</label>
+        <input type="input" name="sharing" class="form-control" min="0" max="5" required/>
+      </div>
+
+      <div class="flashcard">
+        <label>10. How much do your allergies affect your living arrangements?</label>
+        <input type="input" name="allergy" class="form-control" min="0" max="5" required />
+      </div>
+
+      <div class="submit-container">
+        <button type="submit" class="btn">Submit</button>
+      </div>
+
+    </div>
+  </form>
+
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color:#ead7d1">
+    <h1 style="font-style:EB+Garamond;text-align:center;font-size:500%;margin-top: 0;">Personality Test</h1>
+    <div style="background-color:#001c55; height: 400px; width: 80%; margin:0px auto 100px auto;display:flex;justify-content: center;align-items: center;">
+    <form method="post">
+    <div>
+        {% csrf_token %}
+        <div class="mb-3">
+          
+        </div>
+        
+          <div class="mb-3" >
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">1->On a scale from 1 to 5, how much of an early riser are you?</label>
+            <input type="input" class="form-control" name="sleep" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">2->How comfortable are you sleeping with lights on? (1 being not comfortable at 
+              all, 5 being very comfortable)
+              </label>
+            <input type="input" class="form-control" name="lights" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">3->How much do you prefer a quiet study environment? (1 being not at all, 5 
+              being very much)
+              </label>
+            <input type="input" class="form-control" name="study" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label"style="color:#ead7d1">4->How important is maintaining a tidy and organized living space to you? (1 
+              being not important, 5 being extremely important)
+              </label>
+            <input type="input" class="form-control" name="cleanliness" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">5->How much do you prioritize quiet evenings at home over partying? (1 being 
+              not at all, 5 being very much)
+              </label>
+            <input type="input" class="form-control" name="quite" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">6->How much do you prefer quiet, low-key activities over loud, crowded events? 
+              (1 being not at all, 5 being very much)</label>
+            <input type="input" class="form-control" name="selfcontained" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">7->On a scale from 1 to 5, how much do you enjoy spending time reading books 
+              for leisure?</label>
+            <input type="input" class="form-control" name="books" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">8->How comfortable are you with having overnight guests? (1 being not 
+              comfortable at all, 5 being very comfortable)</label>
+            <input type="input" class="form-control" name="overnight" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label"style="color:#ead7d1">9->How much do you prefer sharing responsibilities? (1 being not at all, 5 being 
+              very much)
+              </label>
+            <input type="input" class="form-control" name="sharing" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label" style="color:#ead7d1">10->On a scale from 1 to 5, how much do your allergies affect your living 
+              arrangements?</label>
+            <input type="input" class="form-control" name="allergy" id="exampleInputEmail1" aria-describedby="emailHelp">
+            
+          </div>
+        <button type="submit" href="result/" class="btn btn-primary">Submit</button>
+      </form>
+      </div>
+    </div>
+
+</body>
+</html> -->

@@ -1,0 +1,179 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REGISTER</title>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ------------------ NEW GRADIENT BACKGROUND ------------------ */
+body {
+  min-height: 100vh;
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  /* EXACT SAME GRADIENT AS CHAT PAGE */
+  background: radial-gradient(circle at 15% 20%, rgba(255,191,163,0.55), transparent 60%),
+              radial-gradient(circle at 85% 25%, rgba(14,86,217,0.30), transparent 65%),
+              #ffffff;
+}
+
+/* ---------- Card Wrapper ---------- */
+.wrapper {
+  width: 420px;
+  background: white;
+  border-radius: 25px;
+  padding: 30px 30px 50px;
+  position: relative;
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* ---------- Top SVG Icons ---------- */
+.icon-box {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 15px;
+}
+
+.icon-box img {
+  width: 70px;
+  height: 70px;
+}
+
+/* ---------- Title ---------- */
+.title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+  color: #07205f;
+  margin-bottom: 30px;
+}
+
+/* ---------- Input Fields ---------- */
+form input {
+  width: 100%;
+  height: 55px;
+  border: 1px solid #d4d8e0;
+  border-radius: 10px;
+  padding: 0 15px;
+  font-size: 16px;
+  margin-bottom: 18px;
+  background: #f7f9fc;
+  transition: 0.2s ease;
+}
+
+form input:focus {
+  border-color: #0e56d9;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(30, 100, 230, 0.12);
+  outline: none;
+}
+
+/* ---------- Submit Button ---------- */
+.submit-btn {
+  width: 100%;
+  height: 55px;
+  background: linear-gradient(90deg, #0033a1, #0e56d9);
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 18px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: 0.2s;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+/* ---------- Login Text Below ---------- */
+.switch-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 15px;
+  color: #444;
+}
+
+.switch-text span {
+  color: #0033a1;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ---------- Bottom Curve ---------- */
+.bottom-curve {
+  position: absolute;
+  bottom: -60px;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background: white;
+  border-radius: 50%;
+  z-index: -1;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- SVG Icons -->
+    <div class="icon-box">
+        <img src="/static/user1.svg" alt="icon">
+    </div>
+
+    <div class="title">Registration</div>
+
+    <!-- Registration Form -->
+    <form method="post" action="/register/">
+        {% csrf_token %}
+
+        {% if messages %}
+        <ul style="color:red; list-style:none; padding:0;">
+          {% for message in messages %}
+            {% if 'register' in message.tags %}
+              <li>{{ message }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        <input type="text" name="first_name" placeholder="First name" required>
+        <input type="text" name="last_name" placeholder="Last Name" required>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <button class="submit-btn" type="submit">Submit</button>
+    </form>
+
+    <p class="switch-text">
+        Already have an account? <a href="/login/"><span>Login</span></a>
+    </p>
+
+    <!-- Bottom Curve -->
+    <div class="bottom-curve"></div>
+
+</div>
+
+</body>
+</html>

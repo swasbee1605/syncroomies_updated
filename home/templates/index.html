@@ -1,0 +1,2300 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syncroomies - Find Your Perfect Roommate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ====== FONTS ====== */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+        /* ====== COLOR SYSTEM ====== */
+        :root {
+            --primary: #0033a1;    /* deep blue */
+            --secondary: #0e56d9;  /* bright blue */
+            --accent: #ffbfa3;     /* warm accent */
+            --bg-soft: #f6f7ff;    /* very light blue */
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-soft);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,h2,h3,h4,h5,h6 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+        }
+
+        p {
+            font-weight: 300;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            padding: 0.85rem 2.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: var(--white);
+            box-shadow: 0 12px 30px rgba(14, 86, 217, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(0, 51, 161, 0.35);
+        }
+
+        /* ====== HEADER ====== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(246, 247, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 51, 161, 0.06);
+            padding: 0.75rem 0;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        .logo span {
+            font-style: italic;
+            color: var(--secondary);
+            font-size: 1.9rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.12em;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            position: relative;
+            padding-bottom: 0.25rem;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            transition: width 0.25s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ====== HERO SECTION ====== */
+        .hero {
+            padding-top: 6rem;  /* header gap */
+            padding-bottom: 4rem;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at top left, rgba(255,191,163,0.45), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(14,86,217,0.12), transparent 55%),
+                        #ffffff;
+        }
+
+        .hero-animated-bg {
+            position: absolute;
+            inset: -30%;
+            background: conic-gradient(
+                from 180deg,
+                rgba(14,86,217,0.08),
+                rgba(255,191,163,0.14),
+                rgba(14,86,217,0.12),
+                rgba(255,191,163,0.2),
+                rgba(14,86,217,0.08)
+            );
+            opacity: 0.8;
+            filter: blur(80px);
+            animation: slowSpin 36s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes slowSpin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            max-width: 580px;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 1rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(0, 51, 161, 0.08);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+
+        .hero-pill i {
+            font-size: 0.9rem;
+        }
+
+       .hero-title {
+    font-size: 3.4rem;
+    line-height: 1.18;
+    letter-spacing: 0.5px;
+    max-width: 650px;
+    margin-bottom: 1.2rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.3px;
+    color: var(--text-light);
+}
+
+.hero-text {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    letter-spacing: 0.2px;
+    max-width: 600px;
+    margin-bottom: 2.2rem;
+    color: var(--text-dark);
+}
+
+
+        .hero-highlight {
+            background: linear-gradient(120deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            margin-bottom: 1.6rem;
+        }
+
+        .hero-text {
+            font-size: 0.98rem;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+           
+             margin-bottom: 1.8rem;
+            gap: 1.4rem;
+        }
+
+        .hero-secondary-link {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .hero-secondary-link i {
+            font-size: 0.8rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1.1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .hero-meta-item span {
+            display: block;
+        }
+
+        .hero-meta-label {
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.72rem;
+        }
+
+        .hero-meta-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* ====== HERO ILLUSTRATION ====== */
+        .hero-image-wrap {
+            position: relative;
+            height: 440px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-card {
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+            height: 320px;
+            border-radius: 26px;
+            background: rgba(255,255,255,0.97);
+            box-shadow: 0 18px 60px rgba(15,23,42,0.16);
+            padding: 1.1rem;
+            overflow: hidden;
+        }
+
+        .hero-card-main {
+            position: absolute;
+            inset: 0.8rem;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .hero-card-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: floatSoft 8s ease-in-out infinite;
+        }
+
+        @keyframes floatSoft {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+
+        .hero-badge {
+            position: absolute;
+            bottom: 1.3rem;
+            left: 1.4rem;
+            padding: 0.6rem 0.9rem;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.96);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.78rem;
+            color: var(--primary);
+            box-shadow: 0 10px 25px rgba(15,23,42,0.18);
+        }
+
+        .hero-badge i {
+            color: var(--secondary);
+        }
+
+        .floating-chip {
+            position: absolute;
+            padding: 0.5rem 0.9rem;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: var(--white);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            box-shadow: 0 12px 35px rgba(0,51,161,0.4);
+            animation: chipFloat 9s ease-in-out infinite;
+        }
+
+        .floating-chip.chip-top {
+            top: 0.8rem;
+            right: 1rem;
+        }
+
+        .floating-chip.chip-middle {
+            left: -0.2rem;
+            bottom: 4.2rem;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes chipFloat {
+            0% { transform: translateY(0) translateX(0); opacity: 1; }
+            50% { transform: translateY(-10px) translateX(3px); opacity: 0.96; }
+            100% { transform: translateY(0) translateX(0); opacity: 1; }
+        }
+
+        .hero-soft-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.7);
+            box-shadow: 0 16px 40px rgba(15,23,42,0.12);
+            animation: bobbing 14s ease-in-out infinite;
+        }
+
+        .hero-soft-circle.circle-1 {
+            width: 60px;
+            height: 60px;
+            top: -8px;
+            left: 6%;
+        }
+
+        .hero-soft-circle.circle-2 {
+            width: 46px;
+            height: 46px;
+            right: 5%;
+            bottom: 10%;
+            animation-delay: 2s;
+        }
+
+        @keyframes bobbing {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0); }
+        }
+
+        
+        /* ====== INFO BAR ====== */
+       
+
+.info-bar {
+    padding: 3rem 0 4.5rem;
+    background: transparent;
+}
+
+.info-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2.5rem;  /* Increased spacing between cards */
+    flex-wrap: wrap;
+}
+
+.info-item {
+    flex: 1;
+    min-width: 240px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 26px;
+    padding: 1.9rem 1.7rem;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+
+    /* Animation starting state */
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.9s ease;
+}
+
+/* Scroll-reveal active state */
+.info-item.reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hover elevation */
+.info-item:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 28px 55px rgba(0,0,0,0.10);
+}
+
+/* Floating soft circle detail */
+.info-item::before {
+    content: '';
+    position: absolute;
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    background: rgba(14,86,217,0.07);
+    top: -25px;
+    right: -25px;
+    animation: softFloat 8s ease-in-out infinite;
+}
+
+@keyframes softFloat {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(-15px, 10px) scale(1.05); }
+    100% { transform: translate(0,0); }
+}
+
+.info-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #6b7280;
+    margin-bottom: 0.55rem;
+}
+
+.info-value {
+    font-family: 'Cardo', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.35;
+}
+
+        /* ====== MISSION SECTION ====== */
+        .mission {
+            padding: 3rem 0 4.5rem;
+        }
+
+        .mission-container {
+            display: grid;
+            grid-template-columns: minmax(0,1.1fr) minmax(0,1fr);
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .mission-image-wrapper {
+            position: relative;
+            height: 380px;
+        }
+
+        .mission-bg-orbit {
+            position: absolute;
+            inset: -18%;
+            border-radius: 40%;
+            background: radial-gradient(circle at top, rgba(14,86,217,0.16), transparent 65%),
+                        radial-gradient(circle at bottom, rgba(255,191,163,0.22), transparent 70%);
+            opacity: 0.85;
+            animation: orbitWave 22s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes orbitWave {
+            0%   { transform: translateY(0) scale(1); }
+            50%  { transform: translateY(-16px) scale(1.04); }
+            100% { transform: translateY(6px) scale(1.02); }
+        }
+
+        .mission-main-card,
+        .mission-secondary-card {
+            position: absolute;
+            border-radius: 24px;
+            overflow: hidden;
+            background: var(--white);
+            box-shadow: 0 18px 55px rgba(15,23,42,0.16);
+        }
+
+        .mission-main-card {
+            top: 6%;
+            left: 4%;
+            width: 65%;
+            height: 70%;
+            animation: tiltFloat 14s ease-in-out infinite;
+        }
+
+        .mission-secondary-card {
+            bottom: 4%;
+            right: 2%;
+            width: 52%;
+            height: 62%;
+            animation: tiltFloatReverse 16s ease-in-out infinite;
+        }
+
+        .mission-main-card img,
+        .mission-secondary-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes tiltFloat {
+            0%   { transform: translateY(0) rotate(-1.5deg); }
+            50%  { transform: translateY(-10px) rotate(-3deg); }
+            100% { transform: translateY(0) rotate(-1.5deg); }
+        }
+
+        @keyframes tiltFloatReverse {
+            0%   { transform: translateY(0) rotate(2deg); }
+            50%  { transform: translateY(8px) rotate(3.2deg); }
+            100% { transform: translateY(0) rotate(2deg); }
+        }
+
+        .mission-badge {
+            position: absolute;
+            top: 4%;
+            right: -6%;
+            width: 170px;
+            padding: 0.7rem 0.9rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: var(--white);
+            font-size: 0.78rem;
+            box-shadow: 0 16px 50px rgba(0,51,161,0.45);
+            transform: rotate(6deg);
+            animation: gentleBounce 3.5s ease-in-out infinite;
+        }
+
+        @keyframes gentleBounce {
+            0%,100% { transform: translateY(0) rotate(6deg); }
+            50%     { transform: translateY(-6px) rotate(6deg); }
+        }
+
+        .mission-content .mission-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .mission-title {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .mission-subtitle {
+            font-size: 1.02rem;
+            color: var(--text-light);
+            margin-bottom: 1.4rem;
+        }
+
+        .mission-text {
+            font-size: 0.96rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .mission-list {
+            list-style: none;
+            margin: 1.1rem 0 0;
+            padding: 0;
+        }
+
+        .mission-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
+
+        .mission-list li i {
+            margin-top: 0.2rem;
+            color: var(--secondary);
+        }
+
+        /* ====== FOOTER ====== */
+        footer {
+            padding: 3.2rem 0 0;
+            background: #ffffff;
+            border-top: 1px solid rgba(0,51,161,0.06);
+        }
+
+        .footercontainer {
+            display: flex;
+            justify-content: space-between;
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .footer-logo span {
+            font-style: italic;
+            color: var(--secondary);
+        }
+
+        .footer-about p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1.2rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .social-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,51,161,0.18);
+            color: var(--primary);
+            background-color: #ffffff;
+        }
+
+        .social-link:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: var(--white);
+        }
+
+        .footer-heading {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.6rem;
+        }
+
+        .footer-links a {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            margin-top: 2.2rem;
+            text-align: center;
+            padding: 1rem 0 1.3rem;
+            font-size: 0.85rem;
+            color: #e4ebff;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 992px) {
+            .hero-container,
+            .mission-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content {
+                order: 2;
+                text-align: center;
+                margin: 0 auto;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .hero-meta {
+                justify-content: center;
+            }
+
+            .hero-image-wrap {
+                order: 1;
+                height: 360px;
+            }
+
+            .mission-content {
+                order: 2;
+            }
+
+            .mission-image-wrapper {
+                order: 1;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.6rem 0;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.8rem;
+            }
+
+            .hero-title {
+                font-size: 2.3rem;
+            }
+
+            .hero-card {
+                max-width: 360px;
+                height: 280px;
+            }
+
+            .info-container {
+                flex-direction: column;
+            }
+
+            .footercontainer {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding-top: 5.5rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-card {
+                height: 250px;
+            }
+
+            .mission-image-wrapper {
+                height: 320px;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">Sync<span>roomies</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#mission">About</a></li>
+                    <li><a href="{% url 'login_page' %}">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-animated-bg"></div>
+
+        <div class="container hero-container">
+            <!-- LEFT CONTENT -->
+            <div class="hero-content">
+                <div class="hero-pill">
+                    <i class="fa-solid fa-people-roof"></i>
+                    Roommate Matching · For Students
+                </div>
+                <h1 class="hero-title">
+                    Find the <span class="hero-highlight">right person</span> to share your space.
+                </h1>
+                <p class="hero-subtitle">
+                    Warm, compatible, stress-free co-living for every campus story.
+                </p>
+                <!-- <p class="hero-text">
+                    Syncroomies matches you with roommates based on habits, schedules, and lifestyle preferences—so your room feels like home from day one.
+                </p> -->
+
+                <div class="hero-actions">
+                    <a href="{% url 'register_page' %}" class="btn btn-primary">Register Now!!</a>
+                    <a href="{% url 'login_page' %}" class="hero-secondary-link">
+                        Already have an account?
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="hero-meta">
+                    <div class="hero-meta-item">
+                        <span class="hero-meta-label">Match Focus</span>
+                        <span class="hero-meta-value">Values & Lifestyle</span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <span class="hero-meta-label">For Students</span>
+                        <span class="hero-meta-value">Thapar & Beyond</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT ILLUSTRATION -->
+            <div class="hero-image-wrap">
+                <div class="hero-card">
+                    <div class="hero-card-main">
+                        <!-- IMAGE 1: PUT URL HERE -->
+                        <img src="/static/home1.jpeg" alt="Roommates relaxing together">
+                    </div>
+
+                    <div class="hero-badge">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        <span>Cozy evenings · Shared stories</span>
+                    </div>
+
+                    <div class="floating-chip chip-top">
+                        <i class="fa-solid fa-heart"></i>
+                        90% compatibility score
+                    </div>
+
+                    <div class="floating-chip chip-middle">
+                        <i class="fa-solid fa-laptop-house"></i>
+                        Study-friendly vibes
+                    </div>
+                </div>
+
+                <div class="hero-soft-circle circle-1"></div>
+                <div class="hero-soft-circle circle-2"></div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+    </section>
+
+    <!-- INFO BAR -->
+    <section class="info-bar">
+        <div class="container">
+            <div class="info-container">
+                <div class="info-item">
+                    <p class="info-label">Our Objective</p>
+                    <p class="info-value">Stress-Free Matching</p>
+                </div>
+                <div class="info-item">
+                    <p class="info-label">Shared Values</p>
+                    <p class="info-value">Compatible Connections</p>
+                </div>
+                <div class="info-item">
+                    <p class="info-label">Peaceful Co-Living</p>
+                    <p class="info-value">Harmonious Living</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSION / SECOND IMAGE SECTION -->
+    <section class="mission" id="mission">
+        <div class="container mission-container">
+            <!-- IMAGE CLUSTER WITH ANIMATION -->
+            <div class="mission-image-wrapper">
+                <div class="mission-bg-orbit"></div>
+
+                <div class="mission-main-card">
+                    <!-- IMAGE 2: PUT URL HERE -->
+                    <img src="/static/home2.jpeg" alt="Roommates studying together">
+                </div>
+
+                <div class="mission-secondary-card">
+                    <!-- IMAGE 3: PUT URL HERE -->
+                    <img src="/static/home3.jpeg" alt="Roommates chatting over coffee">
+                </div>
+
+                <div class="mission-badge">
+                    Built for campus life, late-night chai, project panic, and everything in between.
+                </div>
+            </div>
+
+            <!-- TEXT -->
+            <div class="mission-content">
+                <!-- <span class="mission-tag">Why we exist</span> -->
+                <h2 class="mission-title">Redefining shared living for students.</h2>
+                <!-- <p class="mission-subtitle">
+                    Not just splitting rent—Syncroomies is about finding your kind of people and building a mini-home together.
+                </p>
+                <p class="mission-text">
+                    Our matching takes into account your routines, social energy, and non-negotiables so you end up with roommates
+                    who feel natural to live with, not random strangers.
+                </p> -->
+
+                <ul class="mission-list">
+                    <li>
+                        <i class="fa-solid fa-check-circle"></i>
+                        Matches based on interests, routines, and non-negotiables.
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check-circle"></i>
+                        Cozy, safe spaces where you can focus, unwind, and just be yourself.
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check-circle"></i>
+                        Designed especially for student housing and campus-adjacent living.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER (single, cleaned) -->
+   <footer>
+                    <div class="footercontainer">
+                        <div class="footer-about">
+                            <a href="#" class="footer-logo">Sync<span>roomies</span></a>
+                            <p>Our mission is to transform the college housing experience<br> by connecting students with compatible roommates<br> based on personality, lifestyle, and study habits.</p>
+                            <div class="social-links">
+                                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="footer-heading">Quick Links</h3>
+                            <ul class="footer-links">
+                                <li><a href="{% url 'login_page' %}">Login</a></li>
+                                <li><a href="#">About</a></li>
+                                
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="footer-heading">Resources</h3>
+                            <ul class="footer-links">
+                                <li><a href="https://www.thapar.edu/">Thapar Website</a></li>
+                                <li><a href="https://www.thapar.edu/academics/centers/thapar-lms65">LMS</a></li>
+                                <li><a href="https://www.thapar.edu/students/pages/webkiosk">Thapar Webkiosk</a></li>
+                            </ul>
+                            
+                        </div>
+                        <div class="last" style="background-color: #001c55;"></div>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>&copy; 2025 Syncroomies. All rights reserved.</p>
+                    </div>
+                   
+                </footer>
+            
+                  
+                
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll('.info-item');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('reveal');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    cards.forEach(card => observer.observe(card));
+});
+</script>
+        
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syncroomies - Find Your Perfect Roommate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        /* Base Styles */
+        :root {
+            --primary: #001c55;
+            --secondary: #ead7d1;;
+            --tertiary: #f5f5dc;
+            --text-dark: #333333;
+            --text-light: #7a7a7a;
+            --white: #ffffff;
+            --light-bg: #f9f9f5;
+            --cream: #f5f2ed;
+            --accent: #d8b4a0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--cream);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cardo', serif;
+            font-weight: 400;
+            color: var(--primary);
+        }
+        
+        p {
+            font-weight: 300;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            padding: 0.7rem 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            border: 1px solid var(--cream);
+            border-radius: 30px;
+        }
+        
+        .btn-primary:hover {
+           
+            color: var(--primary);
+            background-color: var(--cream);
+            border-radius: 30px;
+            border: 1px solid var(--primary);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Header */
+        header {
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 28, 85, 0.08);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Cardo', serif;
+            font-size: 2.8rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            font-style: italic;
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links a {
+            color: var(--secondary);
+            position: relative;
+            padding-bottom: 5px;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            background-color: var(--secondary);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 7rem;
+            padding-bottom: 0;
+            background-color: var(--cream);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero-subtitle:after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 1px;
+            background-color: var(--secondary);
+            bottom: -1rem;
+            left: 0;
+        }
+        
+        .hero-text {
+            margin-bottom: 2rem;
+            font-weight: 400;
+            max-width: 95%;
+        }
+        
+        .hero-image-wrap {
+            position: relative;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .image-cluster {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hero-image {
+            position: absolute;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .hero-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .hero-image.main {
+    width: 65%;
+    height: 70%;
+    top: 10%;
+    right: 5%;
+    z-index: 3;
+    border-radius: 10px;
+    object-fit: contain;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.571);}
+
+        
+        .hero-image.accent-1 {
+            width: 40%;
+            height: 40%;
+            top: 5%;
+            left: 8%;
+            z-index: 2;
+            transform: rotate(-5deg);
+            border-radius: 10px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.574);
+            object-fit: cover;
+        }
+        
+        .hero-image.accent-2 {
+            width: 35%;
+            height: 35%;
+            bottom: 10%;
+            left: 5%;
+            z-index: 1;
+            transform: rotate(5deg);
+            border-radius: 10px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.57);
+            object-fit: cover;
+        }
+        
+        .star-accent {
+            position: absolute;
+            color: var(--primary);
+            opacity: 0.2;
+            font-size: 1.8rem;
+            z-index: 1;
+        }
+        
+        .star-1 {
+            top: 20%;
+            left: 5%;
+        }
+        
+        .star-2 {
+            bottom: 25%;
+            right: 15%;
+        }
+        
+        .star-3 {
+            top: 35%;
+            right: 25%;
+            font-size: 1.2rem;
+        }
+        
+        .divider {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(0, 28, 85, 0.1);
+            margin: 3rem 0;
+        }
+
+        /* Info Bar */
+        .info-bar {
+            padding: 2rem 0;
+            background-color: var(--cream);
+        }
+        
+        .info-container {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+        }
+        
+        .info-item {
+            text-align: center;
+            position: relative;
+        }
+        
+        .info-item:not(:last-child):after {
+            content: '';
+            position: absolute;
+            right: -2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 40px;
+            background-color: rgba(0, 28, 85, 0.1);
+        }
+        
+        .info-label {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.0rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-value {
+            font-family: 'Cardo', serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        /* Mission Section */
+        .mission {
+            padding: 5rem 0;
+            background-color: var(--cream);
+            position: relative;
+        }
+        
+        .mission:before {
+            content: '';
+            position: absolute;
+            width: 30%;
+            height: 80%;
+            border-radius: 50px;
+            top: 10%;
+            left: 0;
+            z-index: 0;
+        }
+        
+        .mission-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .mission-image-cluster {
+            position: relative;
+            height: 450px;
+            background-color: #001c55;
+            border-radius: 50%;
+            
+        }
+        
+        .mission-image {
+            position: absolute;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mission-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .mission-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .mission-image.main {
+            width: 60%;
+            height: 70%;
+            top: 5%;
+            left: 15%;
+            z-index: 3;
+            border-radius: 10px;
+        }
+        
+        .mission-image.accent-1 {
+            width: 40%;
+            height: 45%;
+            bottom: 10%;
+            right: 5%;
+            z-index: 2;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .mission-image.accent-2 {
+            width: 35%;
+            height: 35%;
+            top: 20%;
+            right: 20%;
+            z-index: 1;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .mission-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .mission-title {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mission-subtitle {
+            font-family: 'Cardo', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .mission-subtitle:after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 1px;
+            background-color: var(--secondary);
+            bottom: -1rem;
+            left: 0;
+        }
+        
+        .mission-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            font-weight: 400;
+
+        }
+        
+        .mission-signature {
+            font-family: 'Cardo', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-top: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .mission-signature:before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 1px;
+            background-color: var(--secondary);
+            top: 50%;
+            left: -40px;
+        }
+
+        
+        
+        /* Footer */
+        footer {
+            padding: 5rem 0 2rem;
+            background-color: var(--cream);
+            border-top: 1px solid rgba(0, 28, 85, 0.1);
+        }
+        
+        .footercontainer {
+     display: flex; /* switch from grid to flex for better spacing control */
+    justify-content: space-between; /* distribute columns evenly */
+    gap: 3rem;
+
+    width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+
+
+        .footer-logo {
+            font-family: 'Cardo', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+        
+        .footer-logo span {
+            font-style: italic;
+            color: var(--secondary);
+        }
+        
+        .footer-about p {
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .footer-heading {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .footer-heading::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 1px;
+            background-color: var(--secondary);
+            bottom: 0;
+            left: 0;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        .footer-column {
+    flex: 1;
+    min-width: 200px;
+    margin: 1rem 0;
+}
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            /* padding-top: 2rem; */
+            padding-bottom: 0;
+            margin-bottom: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 1.2rem;
+            color: var(--secondary);
+            background-color: #001c55;
+            border-radius: 40%;
+        }
+        
+
+
+/* Responsive Adjustment */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-about p {
+        margin: 0 auto 1.5rem;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+}
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .favorites-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+            
+            .footer-about p {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-container, 
+            .mission-container,
+            .services-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .hero-content,
+            .mission-content {
+                order: 2;
+                text-align: center;
+            }
+            
+            .hero-image-wrap,
+            .mission-image-cluster,
+            .services-image-cluster {
+                order: 1;
+                height: 400px;
+            }
+            
+            .hero-subtitle:after,
+            .mission-subtitle:after,
+            .services-subtitle:after {
+                left: 25%;
+                width: 50%;
+            }
+            
+            .hero-image.main {
+                right: 20%;
+            }
+            
+            .hero-image.accent-1 {
+                left: 0;
+            }
+            
+            .mission-image.main {
+                left: 25%;
+            }
+            
+            .mission-image.accent-1 {
+                right: 15%;
+            }
+            
+            .services-image.main {
+                right: 20%;
+            }
+            
+            .services-image.accent {
+                left: 5%;
+            }
+            
+            .info-container {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .info-item:not(:last-child):after {
+                display: none;
+            }
+            
+            .services-content {
+                text-align: center;
+            }
+            
+            .mission-signature:before {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .favorites-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-title,
+            .mission-title,
+            .section-title,
+            .services-title {
+                font-size: 2rem;
+            }
+            
+            .favorite-item:nth-child(n) {
+                grid-column: span 1;
+                grid-row: span 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <!-- <header>
+        <div class="container header-container">
+            <a href="#" class="logo">Sync<span>roomies</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">About</a></li>
+                    <li><a href="{% url 'login_page' %}">login</a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </header> -->
+
+    <!-- Hero Section -->
+    <!-- <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">The right person to share your space</h1>
+                <p class="hero-subtitle">Best-fit cohabitant</p>
+                <p class="hero-text">Discovering the perfect roommate takes expertise. Our algorithm matches your personality traits, habits, and preferences to create a harmonious living environment where differences complement rather than conflict.</p>
+                <a href="{% url 'register_page' %}" class="btn btn-primary">Register Now!!</a>
+            </div>
+            <div class="hero-image-wrap">
+                <div class="image-cluster">
+                    <div class="hero-image main">
+                        <img src="/static/student.avif" alt="Student relaxing in dorm room">
+                    </div>
+                    <div class="hero-image accent-1">
+                        <img src="/static/campus life1.avif" alt="Campus lifestyle">
+                    </div>
+                    <div class="hero-image accent-2">
+                        <img src="/static/Study session.avif" alt="Study session">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+    </section> -->
+
+    <!-- Info Bar-->
+    <!-- <section class="info-bar">
+        <div class="container">
+            <div class="info-container">
+                <div class="info-item">
+                    <p class="info-label">Our Objective</p>
+                    <p class="info-value">Stress-Free Matching</p>
+                </div>
+                <div class="info-item">
+                    <p class="info-label">Shared Values</p>
+                    <p class="info-value">Compatible Connections</p>
+                </div>
+                <div class="info-item">
+                    <p class="info-label">Peaceful Co-Living</p>
+                    <p class="info-value">Harmonious Living</p>
+                </div>
+            </div>
+        </div>
+    </section> --> 
+
+    <!-- Mission Section -->
+    <!-- <section class="mission">
+        <div class="container mission-container">
+            <div class="mission-image-cluster">
+                <div class="mission-image main">
+                    <img src="/static/Students enjoying coffee1.avif" alt="Students enjoying coffee">
+                </div>
+                <div class="mission-image accent-1">
+                    <img src="/static/Dorm room setup.avif" alt="Dorm room setup">
+                </div>
+                
+            </div>
+            <div class="mission-content">
+                <h2 class="mission-title">Why we exist</h2>
+                <p class="mission-subtitle">Redefining Shared Living</p>
+                <p class="mission-text">We aim to revolutionize student housing by simplifying the roommate matching process. Our platform connects students based on shared interests, values, and lifestyles—fostering genuine connections, a sense of belonging, and living environments that support academic success and personal growth.
+
+                </p>
+                <p class="mission-text">Your People, Your Place, Your Peace</p>
+                </div>
+                
+                </section>
+                  
+
+  
+                
+
+<!-- {% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+    background-color: #ead7d1;
+    font-family: EB Garamond — Regular;
+}
+.logo{
+    display: flex;
+    gap: 10px;
+}
+nav{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 1rem;
+    /* position : fixed; */
+}
+
+
+.navitems{
+    display:flex;
+    list-style:none;
+    color:#001c55;
+    font-weight: 600;
+    align-items: center;
+    font-size: 20px;
+    gap: 50px;
+    
+    
+}
+.signup{
+    background-color:#dd99bb;
+    font-size: 20px;
+    border-radius: 26px;
+    /* border-bottom-left-radius: 25%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 50px;
+    font-weight: 700;
+    margin-top: 30px;
+
+}
+.homepage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    margin-top: 100px;
+    /* margin-left: 10px;*/
+} 
+.content{
+    color: #001c55 ;
+    margin-top: -10px;
+    /* margin-left: 20px; */
+}
+.content1{
+    font-size: 60px;
+    font-weight: bold;
+}
+.content2{
+    margin-top: 10px;
+    font-size: 34px;
+    width:500px;
+    font-weight: 700;
+}
+.content3{
+    word-spacing: 1px;
+    letter-spacing: 1px;
+    font-size: 20px;
+    margin-top: 15px;
+
+}
+
+.boxes{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right:20px;
+}
+.boxes>div{
+    display: flex;
+}
+
+.box1>div{
+    height: 150px;
+    width: 150px;
+} 
+
+.box2>div{
+    height: 150px;
+}
+.box3>div{
+    height: 150px;
+    width: 150px;
+}
+.box4>div{
+    height: 150px;
+    width: 150px;
+}
+.img1{
+    background-image: url("/static/team-pic.jpg");
+
+    background-size: cover;
+    background-position: top;
+    display: flex;
+}
+.img2{
+    background-image: url("/static/team-pic.jpg");
+    background-size: cover;
+    background-position: right;
+    display: flex;
+}
+.img3{
+    background-image: url(templates/webimage1.jpg);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+}
+.second{
+    margin-top: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #001c55;
+    gap : 130px;
+
+}
+.second>div>p{
+    width: 700px;
+    word-spacing: 1px;
+    font-size: 19px;
+    letter-spacing: 1px;
+}
+.img4{
+    background-color: black;
+    height: 210px;
+    width: 210px;
+    display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-left: 110px;
+   /* margin-bottom: 500px; */
+   margin-right: -1px;
+   position: relative;
+   bottom: 15px;
+   background-image: url(team\ pic.jpg);
+   background-size: cover;
+   background-position: top;
+   display: flex;
+}
+.third{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 150px;
+}
+#third1{
+    background-color: #c56595; 
+    transform: rotate(-10deg);
+    width: 600px;
+    height: 400px;
+    
+    /* display: flex; */
+   
+}
+#third2{
+    background-color: #001c55;
+    width: 600px;
+    height: 400px;
+    transform: rotate(10deg);
+    margin-left: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+.para{
+    letter-spacing: 1px;
+    word-spacing: 1px;
+    font-size: 18px;
+    margin-top: 13px;
+}
+.heading{
+    margin-top: -4px;
+    font-size: 42px;
+}
+.forth{
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    margin-top: 200px;
+    color: #001c55;
+
+}
+.para1{
+    font-size: 20px;
+    width: 700px;
+    margin-top: 15px;
+    
+}
+
+.forth1{
+    width: 200px;
+    height: 300px;
+    border: 5px solid #7b5065;
+    background-color: black;
+    background-image: url(pic1.jpg);
+    background-size: cover;
+    background-position: top;
+    display: flex;
+    /* margin-left: 20px; */
+}
+.forth2{
+    width: 250px;
+    height: 300px;
+    border: 5px solid #7b5065;
+    background-color: black;
+    background-image: url(pic1.jpg);
+    background-size: cover;
+    background-position: top;
+    display: flex;
+    transform: translateX(30px);
+    position: relative;
+    top: 35px;
+}
+.footer{
+    background-color: #7b5065;
+    width: 100%;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+.linkss{
+    display: flex;
+    flex-direction: column;
+    color: #ead7d1;
+    font-size: 22px;
+    justify-content: left;
+    margin-left: 10px;
+    gap: 20px;
+}
+.linkss>div{
+    margin-left: 45px;
+}
+ul{
+    list-style: none;
+}
+a{
+
+    color: #ead7d1;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    text-decoration: none;
+}
+.product{
+    display: flex;
+    flex-direction: column;
+    color: #ead7d1;
+    font-size: 22px;
+    justify-content: left;
+    margin-left: 10px;
+    gap: 20px;
+}
+.product>div{
+    margin-left: 45px;
+}
+.contact{
+    color: #ead7d1;
+    font-size: 22px ;
+
+}
+
+        </style>
+
+        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="path/to/font-awesome/css/all.min.css">
+    </head>
+    <body>
+        <nav>
+            <div class="logo">
+                <div style="width: 65px; height: 70px; border-bottom-left-radius: 45%; background-color: #001c55; color: #ead7d1; font-size: 28px; display: flex; justify-content: center; align-items: center;">Sync</div>
+                <div style="width: 105px; height: 70px; border-top-right-radius: 35%; background-color: #001c55; color: #ead7d1; font-size: 28px; display: flex; justify-content: center; align-items: center;">Roomies</div>
+                
+            </div>
+            <div >
+                <ul class="navitems">
+                    <li class="listitems">FAQS </li>
+                    <li class="listitems">ABOUT US</li> 
+                    <li class="listitems">LOGIN</li>
+                    <a href="/profile/update"><li class="listitems">UPDATE PROFILE</li></a>
+
+                    
+                </ul>
+            </div>
+        </nav>
+        <div class="homepage">
+            <div class="content">
+                <div class="content1">SyncRoomies <span style="color:#dd99bb ; height: 50px;">:</span></div>
+                <a href="{% url 'update_profile' %}">Update Profile</a>
+
+                <div class="content2">Your Ideal Roommate Awaits</div>
+                <div class="content3">We're revolutionizing student housing through empowered connections.</div>
+                <div class="signup
+                
+                
+                "><p style="color: #001c55;"><a href="/register/">Register Now!!</a></p></div>
+            </div>
+            <div class="boxes">
+                <div class="box1" >.
+                    <div style="background-color: #dd99bb; border-top-right-radius: 45%;"></div>
+                    <div style="background-color:#7b5065; border-bottom-right-radius: 45%;"></div>
+                    <div style="background-color:#001c55; border-top-left-radius: 45%;"></div>
+                </div>
+                <div class="box2">
+                    <div style="background-color: black; width: 300px; border-bottom-right-radius: 36%; border-top-left-radius: 36%; " class="img1"></div>
+                    <div style="background-color: #dd99bb; width: 150px; border-bottom-left-radius: 45%;"></div>
+                </div>
+                <div class="box3">
+                    <div style="background-color: #001c55; border-top-left-radius: 45%;"></div>
+                    <div style="background-color: #7b5065; border-radius: 50%;"></div>
+                    <div style="background-color:black ; border-top-left-radius: 45%; " class="img2"></div>
+                </div>
+                <div class="box4">
+                    <div style="background-color: black;" class="img3"></div>
+                    <div style="background-color: #dd99bb;"></div>
+                    <div style="background-color: #7b5065; border-top-right-radius: 45%; border-bottom-left-radius: 45%;"></div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="second">
+            <div>
+                <h1 style="height: 100px; font-size: 50px;">Why we exist <span style="height: 100px ; color: #dd99bb;">.</span></h1>
+                <p> We exist to revolutionize the student housing experience by offering a tailored platform that simplifies the roommate matching process. Our goal is to empower students to find compatible roommates effortlessly, fostering a sense of belonging and creating living environments conducive to academic success and personal growth. With our innovative approach, we aim to redefine the way students connect and thrive in their college living arrangements.Our mission is to cultivate a sense of community and belonging among students by fostering genuine connections based on shared interests, values, and lifestyles. Through our user-friendly interface and comprehensive matching criteria, we empower students to find roommates who complement their personalities and support their goals.</p>
+            </div>
+            <div>
+                <div style="background-color: #7b5065; width: 300px; height: 300px; border-top-right-radius: 50%; border-top-left-radius: 50%;"><div class="img4"></div></div>
+            </div>
+        </div>
+        <div class="third">
+            <div id="third1">
+                <div style="color: #ead7d1;" id="third2">
+                    <h1 class="heading">Crafting Seamless Connections</h1>
+                    
+                    <p style="width: 500px;" class="para">Building a user-friendly online platform with intuitive features that streamline the roommate matching process. Ensuring that the platform is accessible and easy to navigate for students of all backgrounds. Innovative Matching Algorithm  that  Implements a sophisticated matching algorithm that considers various factors such as interests, values, lifestyle preferences, study habits, and more. This algorithm should generate compatible roommate suggestions to enhance the likelihood of successful matches.</p>
+                </div>
+            </div>
+        </div>
+        <div class="forth">
+            <div class="forth1">
+                <div class="forth2"></div>
+            </div>
+            <div >
+                <h1 style="height: 100px; font-size: 50px;">Our Objective <span style="height: 100px ; color: #dd99bb;">.</span></h1>
+                <p class="para1"> Our objective is to alleviate the stress and anxiety associated with finding roommates by offering an unparalleled matching service. We strive to provide ideal living arrangements by connecting individuals with compatible preferences and mindsets, thus eliminating concerns about the compatibility of living spaces. With our platform, individuals can confidently establish harmonious living environments tailored to their specific needs and preferences, ensuring a seamless transition into shared accommodation.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="contact">
+                <div>CONTACT US</div>
+                <div class="handles">   
+                    <p>
+                        insta:
+                    </p>
+                    <p>syncroommiew</p>
+                    <p>email:</p>
+                    <p>syncroommies_24@gmail.com</p>
+                </div>
+            </div>
+            <div class="linkss">
+                <div>LINKS</div>
+                <ul>
+                    <li> <a href="https://www.thapar.edu/">Thapar website</a></li>
+                    <li> <a href="https://lms.thapar.edu/moodle/login/">Thapar LMS</a></li>
+                    <li> <a href="https://www.thapar.edu/students/pages/webkiosk">Thapar Webkiosk</a></li>
+                </ul>
+            </div>
+            <div class="product">
+                <div>PRODUCT</div>
+                <ul>
+                    <li> Why We Exist</a></li>
+                    <li> How It Exists</a></li>
+                    <li> Objective </li>
+                </ul>
+            </div>
+        </div>
+        
+    </body>
+</html> -->
