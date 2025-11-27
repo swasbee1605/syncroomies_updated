@@ -197,7 +197,9 @@
     const other = "{{ other_user.username }}";
 
     // ALWAYS USE YOUR RENDER BACKEND FOR WEBSOCKETS
-    const socket = new WebSocket(`wss://syncroomies-backend.onrender.com/ws/chat/${other}/`);
+    const socket = new WebSocket(
+    `wss://syncroomies-backend.onrender.com/ws/chat/${other}/`
+);
 
     socket.onmessage = function (e) {
         const data = JSON.parse(e.data);
