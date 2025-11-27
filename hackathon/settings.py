@@ -119,9 +119,10 @@ if REDIS_URL:
 else:
     CHANNEL_LAYERS = {
         "default": {
-            "BACKEND": "channels.layers.InMemoryChannelLayer",
+            "BACKEND": "channels.layers.InMemoryChannelLayer"
         }
     }
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
