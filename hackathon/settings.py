@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+     "corsheaders",
     
     "home",
     "chat",
@@ -51,6 +52,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 # -------------------------------
@@ -119,6 +122,14 @@ else:
             "BACKEND": "channels.layers.InMemoryChannelLayer",
         }
     }
+CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://syncroomies-backend.onrender.com",
+    "https://syncroomies-frontend.onrender.com",
+    "http://localhost:3000",
+]
+
 
 # -------------------------------
 # Password Validation
