@@ -229,7 +229,7 @@ def results_new(request):
 
         distance = float(dist)
         similarity = 1 / (1 + distance)  
-        compatibility = round(similarity * 100, 2)
+        compatibility = round(similarity * 100, 5)
 
         matches.append({
             "name": match_user.name,
