@@ -181,7 +181,6 @@ def submit_bfi(request):
     return render(request, "bfi_form.html")
 
 
-
 def results_new(request):
     user = request.user
 
@@ -198,14 +197,14 @@ def results_new(request):
         return render(request, "results.html", {"no_matches": True})
 
     rows = []
-    ids = []
+    objs = []   # store actual objects here
 
     for s in candidates:
         rows.append([
             s.extraversion, s.agreeableness, s.conscientiousness,
             s.neuroticism, s.openness
         ])
-        ids.append(s.student_id.id)
+        objs.append(s)   # NOT ids
 
     df = pd.DataFrame(rows, columns=["Ext", "Agr", "Con", "Neu", "Opn"])
 
@@ -225,11 +224,10 @@ def results_new(request):
 
     matches = []
     for dist, idx in zip(distances[0], indices[0]):
-        match_user = Student_choices.objects.get(student_id=ids[idx])
+        match_user = objs[idx]   # ← works now
 
         distance = float(dist)
-        similarity = 1 / (1 + distance)  
-        compatibility = round(similarity * 100, 5)
+        compatibility = max(0, 100 - (distance * 20))
 
         matches.append({
             "name": match_user.name,
@@ -249,6 +247,76 @@ def results_new(request):
         "target": target,
         "matches": matches
     })
+
+
+
+# def results_new(request):
+#     user = request.user
+
+#     try:
+#         target = Student_choices.objects.get(student_id=user)
+#     except Student_choices.DoesNotExist:
+#         return redirect("/bfi/")
+
+#     candidates = Student_choices.objects.filter(
+#         gender=target.gender
+#     ).exclude(student_id=user)
+
+#     if not candidates.exists():
+#         return render(request, "results.html", {"no_matches": True})
+
+#     rows = []
+#     ids = []
+
+#     for s in candidates:
+#         rows.append([
+#             s.extraversion, s.agreeableness, s.conscientiousness,
+#             s.neuroticism, s.openness
+#         ])
+#         ids.append(s.student_id.id)
+
+#     df = pd.DataFrame(rows, columns=["Ext", "Agr", "Con", "Neu", "Opn"])
+
+#     target_vec = np.array([
+#         target.extraversion, target.agreeableness,
+#         target.conscientiousness, target.neuroticism, target.openness
+#     ]).reshape(1, -1)
+
+#     scaler = StandardScaler()
+#     X_scaled = scaler.fit_transform(df)
+#     target_scaled = scaler.transform(target_vec)
+
+#     k = min(5, len(df))
+#     knn = NearestNeighbors(n_neighbors=k)
+#     knn.fit(X_scaled)
+#     distances, indices = knn.kneighbors(target_scaled)
+
+#     matches = []
+#     for dist, idx in zip(distances[0], indices[0]):
+#         match_user = Student_choices.objects.get(student_id=ids[idx])
+
+#         distance = float(dist)
+#         similarity = 1 / (1 + distance)  
+#         compatibility = round(similarity * 100, 2)
+
+#         matches.append({
+#             "name": match_user.name,
+#             "user": match_user.student_id,
+#             "compatibility": round(compatibility, 2),
+#             "distance": round(distance, 3),
+#             "traits": {
+#                 "Extraversion": match_user.extraversion,
+#                 "Agreeableness": match_user.agreeableness,
+#                 "Conscientiousness": match_user.conscientiousness,
+#                 "Neuroticism": match_user.neuroticism,
+#                 "Openness": match_user.openness,
+#             }
+#         })
+
+#     return render(request, "results.html", {
+#         "target": target,
+#         "matches": matches
+#     })
 
 
 
