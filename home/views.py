@@ -228,7 +228,8 @@ def results_new(request):
         match_user = Student_choices.objects.get(student_id=ids[idx])
 
         distance = float(dist)
-        compatibility = max(0, 100 - (distance * 20))
+        similarity = 1 / (1 + distance)  
+        compatibility = round(similarity * 100, 2)
 
         matches.append({
             "name": match_user.name,
