@@ -186,13 +186,5 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# --- TEMP: auto-migrate during deploy on Render ---
-if os.environ.get("RENDER"):
-    import django
-    django.setup()
-    from django.core.management import call_command
-    try:
-        call_command("migrate", interactive=False)
-    except Exception as e:
-        print("MIGRATION ERROR:", e)
+
 
