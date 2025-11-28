@@ -8,7 +8,7 @@ User = get_user_model()
 
 # Create your models here.
 class student(models.Model):
-    user=models.OneToOneField(User,on_delete=models.SET_NULL,null=True,blank=True)
+    user = models.OneToOneField("auth.User", on_delete=models.SET_NULL, null=True, blank=True)
     sleep=models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=False, blank=False)
     lights=models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=False, blank=False)
     study=models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=False, blank=False)
@@ -19,10 +19,11 @@ class student(models.Model):
     overnight=models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=False, blank=False)
     sharing=models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=False, blank=False)
     allergy=models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)], null=False, blank=False)
+    
     value=models.FloatField(default=0)
 
 class profile(models.Model):
-    user=models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True)
+    user = models.OneToOneField("auth.User", on_delete=models.CASCADE, null=True, blank=True)
     contact=models.CharField(max_length=10, validators=[MinLengthValidator(10), MaxLengthValidator(10)], unique=True)
     email=models.EmailField(unique=True)
     year=models.TextField(max_length=1)
@@ -42,7 +43,7 @@ class Student_choices(models.Model):
         ("O", "Other"),
     ]
 
-    student_id=models.OneToOneField(User,on_delete=models.SET_NULL,null=True,blank=True)
+    student_id = models.OneToOneField("auth.User", on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
